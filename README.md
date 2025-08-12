@@ -2,7 +2,7 @@
 
 **Automate your investor outreach with AI-powered precision.**
 
-Auto_Pitch_Agent streamlines the process of **identifying relevant investors** for a startup and sending **personalized cold emails** — all in a single automated pipeline powered by **Google Gemini**, **LangChain**, and **LangGraph**.
+Auto_Pitch_Agent streamlines the process of **identifying relevant investors** for a startup and sending **personalized cold emails** — all in a single automated pipeline powered by **Google Gemini** and **LangGraph**.
 
 ---
 
