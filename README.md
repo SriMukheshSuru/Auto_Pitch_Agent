@@ -1,44 +1,63 @@
-# Auto_Pitch_Agent
+# 🚀 Auto_Pitch_Agent
 
-Project Title:
-AI-Powered Investor Outreach Automation
+**Automate your investor outreach with AI-powered precision.**
 
-Description:
-This project automates the process of identifying relevant investors for a startup and sending personalized cold emails using Google Gemini (via LangChain) and a structured investor database.
+Auto_Pitch_Agent streamlines the process of **identifying relevant investors** for a startup and sending **personalized cold emails** — all in a single automated pipeline powered by **Google Gemini**, **LangChain**, and **LangGraph**.
 
-The workflow is built with LangGraph and consists of four main steps:
+---
 
-Company Profiling – Takes a startup name as input and uses Gemini to generate a concise description including its primary domain.
+## 📌 Overview
 
-Investor Matching – Compares the company’s domain with a preloaded CSV of investors. Gemini is used to reason over investor domains and identify the most relevant ones. A custom text normalization process ensures robust matching, even when domain names vary in case, spacing, or punctuation.
+Manual investor research and cold emailing can be **time-consuming** and **error-prone**.  
+Auto_Pitch_Agent solves this by automating the **entire process**:
 
-Email Drafting – Automatically generates a personalized cold outreach email to potential investors using the company’s profile.
+1. **Company Profiling** → Generate a concise startup profile, including its **primary domain**.
+2. **Investor Matching** → Identify investors whose domains align with your startup.
+3. **Email Drafting** → Create **personalized outreach emails** for each investor.
+4. **Automated Email Sending** → Deliver professional emails directly to investor inboxes.
 
-Automated Email Sending – Sends the email to all matched investors via SMTP, with safeguards to avoid sending to placeholder or invalid addresses.
+---
 
-Key Features:
+## ✨ Key Features
 
-Natural Language Understanding: Uses Gemini to interpret the startup’s industry and domain.
+- **🧠 Natural Language Understanding**  
+  Uses **Google Gemini** to interpret a startup's **industry** and **domain**.
+  
+- **🔍 Flexible Domain Matching**  
+  Robust matching with **text normalization** to handle variations:  
+  `"Data Science & AI"` ↔ `"datascience and ai"`
 
-Flexible Domain Matching: Handles variations in domain naming (e.g., “Data Science & AI” vs. “datascience and ai”).
+- **⚙ Modular LangGraph Workflow**  
+  State-driven execution ensures **smooth orchestration** from profiling to outreach.
 
-LangGraph Workflow: Modular, state-driven pipeline for smooth execution from profiling to outreach.
+- **📧 Automated Email Outreach**  
+  Sends **investor-specific cold emails** via SMTP with safety checks for invalid/placeholder emails.
 
-Automated Outreach: Generates and sends investor-specific cold emails without manual intervention.
+---
 
-Tech Stack:
+## 🛠 Tech Stack
 
-Python
+- **Language & Orchestration**
+  - Python
+  - [LangChain](https://www.langchain.com/) + [Google Gemini API](https://ai.google.dev/)
+  - [LangGraph](https://www.langchain.com/langgraph)
 
-LangChain + Google Gemini API
+- **Data Handling**
+  - Pandas
 
-LangGraph for workflow orchestration
+- **Email Sending**
+  - SMTP
 
-Pandas for data handling
+- **Security**
+  - dotenv for environment variable management
 
-SMTP for email sending
+---
 
-dotenv for secure environment variable management
+## 🗂 Workflow
 
-Use Case:
-Startups can use this tool to quickly identify the right investors based on their business domain and initiate contact with a professionally drafted cold email — saving hours of manual research and outreach effort.
+```mermaid
+flowchart TD
+    A[Startup Name Input] --> B[Company Profiling]
+    B --> C[Investor Matching]
+    C --> D[Email Drafting]
+    D --> E[Automated Email Sending]
