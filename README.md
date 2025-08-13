@@ -39,7 +39,7 @@
 
 **💻 Language & AI**  
 - Python 3.9+  
-- [LangChain](https://www.langchain.com/) + [Google Gemini API](https://ai.google.dev/)  
+- [Google Gemini API](https://ai.google.dev/)  
 - [LangGraph](https://www.langchain.com/langgraph)  
 
 **📊 Data Handling**  
