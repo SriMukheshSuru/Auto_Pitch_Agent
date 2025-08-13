@@ -1,5 +1,5 @@
 import os
-import requests
+import cloudscraper
 from bs4 import BeautifulSoup
 from dotenv import load_dotenv
 import google.generativeai as genai
@@ -20,9 +20,10 @@ genai.configure(api_key=GEMINI_API_KEY)
 company_name = input("Enter Company Name: ")
 company_website = input("Enter Company Website (with https://): ")
 
-# Step 2: Scrape only homepage
+# Step 2: Scrape homepage using cloudscraper (bypasses Cloudflare & basic bot protections)
+scraper = cloudscraper.create_scraper()
 try:
-    response = requests.get(company_website, timeout=10)
+    response = scraper.get(company_website, timeout=15)
     response.raise_for_status()
 except Exception as e:
     print(f"Error fetching website: {e}")
@@ -48,11 +49,11 @@ Homepage Text:
 # Step 5: Call Gemini API
 try:
     model = genai.GenerativeModel(MODEL)
-    response = model.generate_content(prompt)
+    gemini_response = model.generate_content(prompt)
 except Exception as e:
     print(f"Error calling Gemini API: {e}")
     exit()
 
 # Step 6: Output results
 print("\n--- Company Domains / Fields ---")
-print(response.text.strip())
+print(gemini_response.text.strip())
