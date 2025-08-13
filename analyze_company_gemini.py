@@ -39,9 +39,8 @@ text = text[:1500]  # Keep only first 1500 characters
 
 # Step 4: Prepare LLM prompt
 prompt = f"""
-From the following homepage text of {company_name}, identify the main domains or fields this company is interested in.
-Give the answer as a short bullet list.
-
+From the following homepage text of {company_name}, list only the main domains or fields this company is interested in. 
+Provide them as a simple bullet list of titles—no explanations.
 Homepage Text:
 {text}
 """
