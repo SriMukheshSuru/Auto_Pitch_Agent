@@ -6,8 +6,7 @@ import subprocess
 import json
 
 # Load environment variables
-load_dotenv()
-MODEL = os.getenv("LLM_MODEL", "mistral")
+MODEL = "llama3:8b"
 
 # Step 1: Get inputs
 company_name = input("Enter Company Name: ")
