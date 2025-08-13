@@ -7,7 +7,7 @@ import google.generativeai as genai
 # Load environment variables
 load_dotenv()
 GEMINI_API_KEY = os.getenv("GEMINI_API_KEY", "")
-MODEL = os.getenv("LLM_MODEL", "gemini-1.5-flash")  # default model
+MODEL = os.getenv("LLM_MODEL", "gemini-2.0-flash")  # default model
 
 if not GEMINI_API_KEY:
     print("❌ GEMINI_API_KEY not found in .env file.")
