@@ -40,7 +40,7 @@ df['final_investment_thesis_clean'] = df['Final Investment thesis'].apply(clean_
 # -----------------
 # Load model & encode
 # -----------------
-model = SentenceTransformer("sentence-transformers/all-MiniLM-L6-v2")
+model = SentenceTransformer("sentence-transformers/all-distilroberta-v1")
 embeddings = model.encode(df['final_investment_thesis_clean'].tolist(), show_progress_bar=True)
 embeddings = np.array(embeddings, dtype="float32")
 
