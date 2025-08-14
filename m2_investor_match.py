@@ -21,10 +21,12 @@ def find_matching_investors(summary, top_k=5):
     # Prepare results
     results = df.iloc[indices[0]].copy()
     results["similarity"] = distances[0]
-    return results[['Investor name', 'Website', 'Final Investment thesis', 'similarity']]
+    return results[['Investor name', 'Website', 'similarity']]
+    # return results[['Investor name', 'Website', 'Final Investment thesis', 'similarity']]
+    
 
 # Example usage
-if __name__ == "__main__":
-    company_summary = "data science and ai"
-    matches = find_matching_investors(company_summary, top_k=5)
-    print(matches)
+# if __name__ == "__main__":
+#     company_summary = "data science and ai"
+#     matches = find_matching_investors(company_summary, top_k=10)
+#     print(matches)
