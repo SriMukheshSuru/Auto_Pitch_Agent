@@ -3,7 +3,7 @@ import re
 import smtplib
 from email.utils import formataddr
 from email.mime.text import MIMEText
-from typing import Optional, Tuple
+from typing import Optional, Tuple, Callable
 
 import pandas as pd
 from dotenv import load_dotenv
@@ -198,16 +198,28 @@ def send_personalized_emails(
     founder_name: Optional[str] = None,
     company_name: Optional[str] = None,
     dry_run: bool = False,
+    email_column: Optional[str] = None,
+    on_log: Optional[Callable[[str], None]] = None,
 ) -> None:
+    def log(message: str) -> None:
+        try:
+            if on_log is not None:
+                on_log(message)
+        finally:
+            print(message)
+
     # Identify email column if present
     email_col = None
-    for candidate in ["Email", "email", "Email Address", "Investor Email", "Contact Email"]:
-        if candidate in matches_df.columns:
-            email_col = candidate
-            break
+    if email_column and email_column in matches_df.columns:
+        email_col = email_column
+    else:
+        for candidate in ["Email", "email", "Email Address", "Investor Email", "Contact Email"]:
+            if candidate in matches_df.columns:
+                email_col = candidate
+                break
 
     if email_col is None:
-        print("⚠️ No email column found in matches; skipping email sending.")
+        log("⚠️ No email column found in matches; skipping email sending.")
         return
 
     sent_count = 0
@@ -218,7 +230,7 @@ def send_personalized_emails(
         to_email = str(row.get(email_col, "")).strip()
 
         if not _valid_email(to_email):
-            print(f"⚠️ Skipping {investor_name}: invalid email '{to_email}'.")
+            log(f"⚠️ Skipping {investor_name}: invalid email '{to_email}'.")
             continue
 
         subject, body = generate_personalized_email(
@@ -231,22 +243,22 @@ def send_personalized_emails(
         )
 
         if not subject or not body:
-            print(f"⚠️ Skipping {investor_name}: failed to generate email content.")
+            log(f"⚠️ Skipping {investor_name}: failed to generate email content.")
             continue
 
         if dry_run:
             preview = body if len(body) < 300 else body[:300] + "..."
-            print(f"\n--- DRY RUN: {investor_name} <{to_email}> ---\nSubject: {subject}\n{preview}")
+            log(f"\n--- DRY RUN: {investor_name} <{to_email}> ---\nSubject: {subject}\n{preview}")
             continue
 
         ok = send_email_smtp(to_email, subject, body)
         if ok:
             sent_count += 1
-            print(f"✅ Sent to {investor_name} <{to_email}>")
+            log(f"✅ Sent to {investor_name} <{to_email}>")
         else:
-            print(f"❌ Failed to send to {investor_name} <{to_email}>")
+            log(f"❌ Failed to send to {investor_name} <{to_email}>")
 
     if not dry_run:
-        print(f"\n📨 Done. Sent {sent_count} emails.")
+        log(f"\n📨 Done. Sent {sent_count} emails.")
 
 

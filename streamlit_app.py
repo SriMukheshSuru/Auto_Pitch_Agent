@@ -1,4 +1,7 @@
 import os
+import io
+import contextlib
+import time
 import pandas as pd
 import streamlit as st
 from dotenv import load_dotenv
@@ -29,6 +32,12 @@ def main():
         st.divider()
         top_k = st.slider("Number of investors to match", min_value=1, max_value=25, value=10)
 
+    # Persist results across reruns
+    if "summary_text" not in st.session_state:
+        st.session_state.summary_text = None
+    if "matches_df" not in st.session_state:
+        st.session_state.matches_df = None
+
     col1, col2 = st.columns(2)
     with col1:
         st.subheader("Company Inputs")
@@ -50,27 +59,43 @@ def main():
             st.error("Could not analyze the company. Check your GEMINI_API_KEY and website.")
             return
 
-        summary_placeholder.subheader("Company Domains / Fields")
-        summary_placeholder.code(summary_text)
+        st.session_state.summary_text = summary_text
 
         with st.spinner("Finding matching investors..."):
-            matches_df = find_matching_investors(summary_text, top_k=top_k)
+            st.session_state.matches_df = find_matching_investors(summary_text, top_k=top_k)
 
-        st.subheader("Matching Investors")
-        matches_placeholder.dataframe(matches_df, hide_index=True, use_container_width=True)
+    # Show analysis if present
+    if st.session_state.summary_text:
+        summary_placeholder.subheader("Company Domains / Fields")
+        summary_placeholder.code(st.session_state.summary_text)
+
+    # Show matches and sending UI if available
+    if isinstance(st.session_state.matches_df, pd.DataFrame) and not st.session_state.matches_df.empty:
+        matches_container = st.container()
+        with matches_container:
+            st.subheader("Matching Investors")
+            st.dataframe(st.session_state.matches_df, hide_index=True, use_container_width=True)
 
         st.divider()
         st.subheader("Send Emails")
+        logs_placeholder = st.empty()
         if st.button("Generate and Send Emails"):
             with st.spinner("Generating personalized emails and sending..."):
+                log_lines = []
+                def push_log(line: str):
+                    log_lines.append(line)
+                    logs_placeholder.code("\n".join(log_lines))
+                    time.sleep(0.05)
                 send_personalized_emails(
-                    summary_text,
-                    matches_df,
+                    st.session_state.summary_text,
+                    st.session_state.matches_df,
                     founder_name=founder_name.strip() or None,
                     company_name=company_name.strip() or None,
                     dry_run=dry_run,
+                    email_column="Email",
+                    on_log=push_log,
                 )
-            st.success("Done. Check console/logs for per-recipient status.")
+            st.success("Done.")
 
 
 if __name__ == "__main__":
