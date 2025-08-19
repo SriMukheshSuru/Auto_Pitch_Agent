@@ -1,0 +1,10 @@
+streamlit
+python-dotenv
+google-generativeai
+cloudscraper
+beautifulsoup4
+pandas
+faiss-cpu
+sentence-transformers
+gspread
+oauth2client
