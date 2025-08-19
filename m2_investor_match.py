@@ -3,6 +3,13 @@ import faiss
 from sentence_transformers import SentenceTransformer
 
 MODEL_NAME = "sentence-transformers/all-distilroberta-v1"
+PREFERRED_EMAIL_COLUMNS = [
+    "Email",
+    "email",
+    "Email Address",
+    "Investor Email",
+    "Contact Email",
+]
 
 # Load model, FAISS index, and investor data once
 print("🔄 Loading model & data...")
@@ -21,8 +28,22 @@ def find_matching_investors(summary, top_k=5):
     # Prepare results
     results = df.iloc[indices[0]].copy()
     results["similarity"] = distances[0]
-    return results[['Investor name', 'Website', 'similarity']]
-    # return results[['Investor name', 'Website', 'Final Investment thesis', 'similarity']]
+
+    # Build a robust set of return columns
+    desired_columns = ['Investor name', 'Website']
+    # Try to include an email column if present
+    for col in PREFERRED_EMAIL_COLUMNS:
+        if col in results.columns:
+            desired_columns.append(col)
+            break
+    # Optionally include thesis for better personalization downstream
+    if 'Final Investment thesis' in results.columns:
+        desired_columns.append('Final Investment thesis')
+    desired_columns.append('similarity')
+
+    # Filter to existing columns only (defensive against schema drift)
+    desired_columns = [c for c in desired_columns if c in results.columns]
+    return results[desired_columns]
     
 
 # Example usage

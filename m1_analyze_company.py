@@ -5,7 +5,8 @@ from bs4 import BeautifulSoup
 from dotenv import load_dotenv
 import google.generativeai as genai
 
-def analyze_company():
+
+def analyze_company(company_name: str = None, company_website: str = None):
     # Load environment variables
     load_dotenv()
     GEMINI_API_KEY = os.getenv("GEMINI_API_KEY", "")
@@ -18,9 +19,11 @@ def analyze_company():
     # Configure Gemini API
     genai.configure(api_key=GEMINI_API_KEY)
 
-    # Step 1: Get inputs
-    company_name = input("Enter Company Name: ")
-    company_website = input("Enter Company Website (with https://): ")
+    # Step 1: Get inputs (CLI fallback)
+    if not company_name:
+        company_name = input("Enter Company Name: ")
+    if not company_website:
+        company_website = input("Enter Company Website (with https://): ")
 
     # Step 2: Scrape homepage
     scraper = cloudscraper.create_scraper()
