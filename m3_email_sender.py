@@ -200,6 +200,7 @@ def send_personalized_emails(
     dry_run: bool = False,
     email_column: Optional[str] = None,
     on_log: Optional[Callable[[str], None]] = None,
+    on_progress: Optional[Callable[[int, int], None]] = None,
 ) -> None:
     def log(message: str) -> None:
         try:
@@ -223,7 +224,13 @@ def send_personalized_emails(
         return
 
     sent_count = 0
-    for _, row in matches_df.iterrows():
+    total_rows = len(matches_df)
+    for idx, (_, row) in enumerate(matches_df.iterrows(), start=1):
+        if on_progress is not None:
+            try:
+                on_progress(idx - 1, total_rows)
+            except Exception:
+                pass
         investor_name = str(row.get("Investor name", "Investor")).strip()
         investor_website = str(row.get("Website", "")).strip()
         investor_thesis = str(row.get("Final Investment thesis", "")).strip()
@@ -260,5 +267,10 @@ def send_personalized_emails(
 
     if not dry_run:
         log(f"\n📨 Done. Sent {sent_count} emails.")
+    if on_progress is not None:
+        try:
+            on_progress(total_rows, total_rows)
+        except Exception:
+            pass
 
 

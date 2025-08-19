@@ -79,13 +79,20 @@ def main():
         st.divider()
         st.subheader("Send Emails")
         logs_placeholder = st.empty()
+        progress_placeholder = st.progress(0, text="Preparing to send emails...")
         if st.button("Generate and Send Emails"):
             with st.spinner("Generating personalized emails and sending..."):
                 log_lines = []
                 def push_log(line: str):
                     log_lines.append(line)
                     logs_placeholder.code("\n".join(log_lines))
-                    time.sleep(0.05)
+                    time.sleep(0.02)
+
+                total = len(st.session_state.matches_df)
+                def push_progress(done: int, total_count: int):
+                    pct = int((done / max(total_count, 1)) * 100)
+                    progress_placeholder.progress(pct, text=f"Sending emails... {done}/{total_count}")
+
                 send_personalized_emails(
                     st.session_state.summary_text,
                     st.session_state.matches_df,
@@ -94,7 +101,9 @@ def main():
                     dry_run=dry_run,
                     email_column="Email",
                     on_log=push_log,
+                    on_progress=push_progress,
                 )
+            progress_placeholder.progress(100, text="Completed")
             st.success("Done.")
 
 
