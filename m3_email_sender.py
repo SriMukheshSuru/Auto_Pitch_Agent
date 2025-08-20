@@ -53,6 +53,9 @@ def generate_personalized_email(
     investor_thesis: Optional[str] = None,
     founder_name: Optional[str] = None,
     company_name: Optional[str] = None,
+    founder_email: Optional[str] = None,
+    founder_phone: Optional[str] = None,
+    founder_linkedin: Optional[str] = None,
 ) -> Tuple[str, str]:
     model_name = _configure_gemini()
     if not model_name:
@@ -76,7 +79,13 @@ Subject: <compelling one-line subject>
 Body:
 <final email body>
 
-Signature should include {founder_name or "Founder"} and {company_name or "our company"}.
+Append a signature with NO headings/labels and NO title. Use only provided values; omit missing/blank lines. Insert one blank line before the signature. The signature must be exactly these lines, in order:
+Regards,
+{founder_name or ""}
+{company_name or ""}
+{founder_email or ""}
+{founder_phone or ""}
+{founder_linkedin or ""}
 """
 
     try:
@@ -97,6 +106,23 @@ def _valid_email(addr: str) -> bool:
     if not addr or addr.lower() in {"n/a", "na", "-", "none", "null"}:
         return False
     return re.match(r"^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$", addr, re.IGNORECASE) is not None
+
+
+def _sanitize_email(addr: str) -> str:
+    """Normalize common email formatting issues from CSVs or manual entry.
+    - Trim spaces
+    - Lowercase domain
+    - Remove surrounding angle brackets or quotes
+    - Replace common obfuscations like ' at ' and ' dot '
+    """
+    if not isinstance(addr, str):
+        return ""
+    cleaned = addr.strip().strip('<>"\'').replace("(at)", "@").replace("[at]", "@").replace(" at ", "@").replace("(dot)", ".").replace("[dot]", ".").replace(" dot ", ".")
+    # split local@domain and lowercase domain only
+    if "@" in cleaned:
+        local, domain = cleaned.split("@", 1)
+        cleaned = f"{local}@{domain.lower()}"
+    return cleaned
 
 
 def _get_env_any(keys, default: str = "") -> str:
@@ -197,6 +223,9 @@ def send_personalized_emails(
     matches_df: pd.DataFrame,
     founder_name: Optional[str] = None,
     company_name: Optional[str] = None,
+    founder_email: Optional[str] = None,
+    founder_phone: Optional[str] = None,
+    founder_linkedin: Optional[str] = None,
     dry_run: bool = False,
     email_column: Optional[str] = None,
     on_log: Optional[Callable[[str], None]] = None,
@@ -234,10 +263,11 @@ def send_personalized_emails(
         investor_name = str(row.get("Investor name", "Investor")).strip()
         investor_website = str(row.get("Website", "")).strip()
         investor_thesis = str(row.get("Final Investment thesis", "")).strip()
-        to_email = str(row.get(email_col, "")).strip()
+        raw_email = str(row.get(email_col, "")).strip()
+        to_email = _sanitize_email(raw_email)
 
         if not _valid_email(to_email):
-            log(f"⚠️ Skipping {investor_name}: invalid email '{to_email}'.")
+            log(f"⚠️ Skipping {investor_name}: invalid email '{raw_email}' → sanitized '{to_email}'.")
             continue
 
         subject, body = generate_personalized_email(
@@ -247,6 +277,9 @@ def send_personalized_emails(
             investor_thesis=investor_thesis or None,
             founder_name=founder_name or os.getenv("FOUNDER_NAME"),
             company_name=company_name or os.getenv("COMPANY_NAME"),
+            founder_email=founder_email or _get_env_any(["FOUNDER_EMAIL", "EMAIL_FROM", "SENDER_EMAIL", "SMTP_FROM", "EMAIL"]),
+            founder_phone=founder_phone or _get_env_any(["FOUNDER_PHONE", "PHONE", "CONTACT_PHONE", "MOBILE", "CONTACT_NUMBER"]),
+            founder_linkedin=founder_linkedin or _get_env_any(["FOUNDER_LINKEDIN", "LINKEDIN", "LINKEDIN_PROFILE", "FOUNDER_LINKEDIN_URL", "LINKEDIN_URL"]),
         )
 
         if not subject or not body:
@@ -263,7 +296,7 @@ def send_personalized_emails(
             sent_count += 1
             log(f"✅ Sent to {investor_name} <{to_email}>")
         else:
-            log(f"❌ Failed to send to {investor_name} <{to_email}>")
+            log(f"❌ Failed to send to {investor_name} <{to_email}> — check SMTP creds, SPF/DKIM, and recipient address.")
 
     if not dry_run:
         log(f"\n📨 Done. Sent {sent_count} emails.")

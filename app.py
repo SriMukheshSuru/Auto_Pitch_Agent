@@ -188,6 +188,7 @@ def init_session_state():
         "matches_df": None,
         "logs": [],
         "send_count": 0,
+        "company_name_main": None,
     }
     for k, v in defaults.items():
         if k not in st.session_state:
@@ -212,7 +213,9 @@ def main():
         st.divider()
         st.header("Signature")
         st.text_input("Your name", os.getenv("FOUNDER_NAME", ""), key="founder_name")
-        st.text_input("Company name", os.getenv("COMPANY_NAME", ""), key="company_name_sidebar")
+        st.text_input("Your email", os.getenv("FOUNDER_EMAIL", os.getenv("EMAIL_FROM", "")), key="founder_email")
+        st.text_input("Your phone", os.getenv("FOUNDER_PHONE", ""), key="founder_phone")
+        st.text_input("LinkedIn profile URL", os.getenv("FOUNDER_LINKEDIN", ""), key="founder_linkedin")
 
         st.divider()
         st.slider("Number of investors to match", min_value=1, max_value=25, value=10, key="top_k")
@@ -238,6 +241,8 @@ def main():
             else:
                 # store analysis and matches
                 st.session_state["summary_text"] = summary_text
+                # store company name from main input for later signature use
+                st.session_state["company_name_main"] = company_name_input
                 with st.spinner("Finding matching investors..."):
                     try:
                         matches_df = find_matching_investors(summary_text, top_k=st.session_state.get("top_k", 10))
@@ -280,7 +285,7 @@ def main():
             summary_text = st.session_state.get("summary_text")
             matches_df = st.session_state.get("matches_df")
             founder_name = st.session_state.get("founder_name", None)
-            company_name = st.session_state.get("company_name_sidebar", None)
+            company_name = st.session_state.get("company_name_main", None)
             dry_run = bool(st.session_state.get("dry_run_toggle", True))
 
             if summary_text is None or matches_df is None or len(matches_df) == 0:
@@ -337,6 +342,9 @@ def main():
                         matches_df,
                         founder_name=founder_name.strip() if founder_name else None,
                         company_name=company_name.strip() if company_name else None,
+                        founder_email=(st.session_state.get("founder_email") or "").strip() or None,
+                        founder_phone=(st.session_state.get("founder_phone") or "").strip() or None,
+                        founder_linkedin=(st.session_state.get("founder_linkedin") or "").strip() or None,
                         dry_run=dry_run,
                         on_log=on_ui_log,  # pass the UI logger
                     )
@@ -367,6 +375,9 @@ def main():
                                 matches_df,
                                 founder_name=founder_name.strip() if founder_name else None,
                                 company_name=company_name.strip() if company_name else None,
+                                founder_email=(st.session_state.get("founder_email") or "").strip() or None,
+                                founder_phone=(st.session_state.get("founder_phone") or "").strip() or None,
+                                founder_linkedin=(st.session_state.get("founder_linkedin") or "").strip() or None,
                                 dry_run=dry_run,
                             )
                         if isinstance(maybe_returned, (list, tuple)):

@@ -8,3 +8,15 @@ faiss-cpu
 sentence-transformers
 gspread
 oauth2client
+
+
+
+
+
+
+
+
+
+
+
+

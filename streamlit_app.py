@@ -27,7 +27,9 @@ def main():
         st.divider()
         st.header("Signature")
         founder_name = st.text_input("Your name", os.getenv("FOUNDER_NAME", ""))
-        company_name = st.text_input("Company name", os.getenv("COMPANY_NAME", ""))
+        founder_email = st.text_input("Your email", os.getenv("FOUNDER_EMAIL", os.getenv("EMAIL_FROM", "")))
+        founder_phone = st.text_input("Your phone", os.getenv("FOUNDER_PHONE", ""))
+        founder_linkedin = st.text_input("LinkedIn profile URL", os.getenv("FOUNDER_LINKEDIN", ""))
 
         st.divider()
         top_k = st.slider("Number of investors to match", min_value=1, max_value=25, value=10)
@@ -37,6 +39,8 @@ def main():
         st.session_state.summary_text = None
     if "matches_df" not in st.session_state:
         st.session_state.matches_df = None
+    if "company_name_main" not in st.session_state:
+        st.session_state.company_name_main = None
 
     col1, col2 = st.columns(2)
     with col1:
@@ -60,6 +64,8 @@ def main():
             return
 
         st.session_state.summary_text = summary_text
+        # Persist the company name from the main input for use in signature during send
+        st.session_state.company_name_main = company_name_input
 
         with st.spinner("Finding matching investors..."):
             st.session_state.matches_df = find_matching_investors(summary_text, top_k=top_k)
@@ -97,7 +103,10 @@ def main():
                     st.session_state.summary_text,
                     st.session_state.matches_df,
                     founder_name=founder_name.strip() or None,
-                    company_name=company_name.strip() or None,
+                    company_name=(st.session_state.company_name_main or "").strip() or None,
+                    founder_email=founder_email.strip() or None,
+                    founder_phone=founder_phone.strip() or None,
+                    founder_linkedin=founder_linkedin.strip() or None,
                     dry_run=dry_run,
                     email_column="Email",
                     on_log=push_log,
