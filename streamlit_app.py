@@ -12,7 +12,7 @@ from m3_email_sender import send_personalized_emails
 
 
 def main():
-    st.set_page_config(page_title="Auto Pitch Agent", page_icon="📧", layout="wide")
+    st.set_page_config(page_title="Auto Pitch Agent", page_icon="icon.png", layout="wide")
     load_dotenv()
 
     st.title("Auto Pitch Agent")
