@@ -268,8 +268,27 @@ def main():
         st.subheader("Company Domains / Fields")
         st.code(st.session_state.get("summary_text"))
 
-        st.subheader("Matching Investors")
-        st.dataframe(st.session_state.get("matches_df"), hide_index=True, use_container_width=True)
+        st.subheader("Matching Investors (select recipients)")
+        editable_df = st.session_state.get("matches_df")
+        try:
+            editable_df = editable_df.copy()
+            if "Include" not in editable_df.columns:
+                editable_df.insert(0, "Include", True)
+            edited_df = st.data_editor(
+                editable_df,
+                hide_index=True,
+                use_container_width=True,
+                column_config={
+                    "Include": st.column_config.CheckboxColumn("Include", help="Uncheck to exclude this investor from sending")
+                },
+                num_rows="fixed",
+                key="matches_editor",
+            )
+            selected_df = edited_df[edited_df["Include"] == True].drop(columns=["Include"])  # noqa: E712
+        except Exception:
+            selected_df = st.session_state.get("matches_df")
+        st.session_state["matches_df_selected"] = selected_df
+        st.caption(f"Will send to {len(selected_df)}/{len(st.session_state.get('matches_df'))} selected investors.")
 
         st.divider()
         st.subheader("Send Emails")
@@ -281,9 +300,13 @@ def main():
         log_placeholder.text("Logs will appear here when you send emails.")
 
         # send button runs callback in-line (so we can capture stdout)
-        if st.button("Generate and Send Emails", key="send_emails_button"):
+        if st.button("Generate and Send Emails", key="send_emails_button", type="primary"):
             summary_text = st.session_state.get("summary_text")
-            matches_df = st.session_state.get("matches_df")
+            selected_to_send = st.session_state.get("matches_df_selected")
+            if isinstance(selected_to_send, pd.DataFrame):
+                matches_df = selected_to_send
+            else:
+                matches_df = st.session_state.get("matches_df")
             founder_name = st.session_state.get("founder_name", None)
             company_name = st.session_state.get("company_name_main", None)
             dry_run = bool(st.session_state.get("dry_run_toggle", True))

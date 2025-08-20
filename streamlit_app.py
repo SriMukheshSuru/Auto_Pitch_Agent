@@ -79,14 +79,35 @@ def main():
     if isinstance(st.session_state.matches_df, pd.DataFrame) and not st.session_state.matches_df.empty:
         matches_container = st.container()
         with matches_container:
-            st.subheader("Matching Investors")
-            st.dataframe(st.session_state.matches_df, hide_index=True, use_container_width=True)
+            st.subheader("Matching Investors (select recipients)")
+        editable_df = st.session_state.matches_df.copy()
+        if "Include" not in editable_df.columns:
+            try:
+                editable_df.insert(0, "Include", True)
+            except Exception:
+                editable_df["Include"] = True
+        edited_df = st.data_editor(
+            editable_df,
+            hide_index=True,
+            use_container_width=True,
+            column_config={
+                "Include": st.column_config.CheckboxColumn("Include", help="Uncheck to exclude this investor from sending")
+            },
+            num_rows="fixed",
+            key="matches_editor",
+        )
+        try:
+            selected_df = edited_df[edited_df["Include"] == True].drop(columns=["Include"])  # noqa: E712
+        except Exception:
+            selected_df = st.session_state.matches_df
+        st.session_state.matches_df_selected = selected_df
+        st.caption(f"Will send to {len(selected_df)}/{len(st.session_state.matches_df)} selected investors.")
 
         st.divider()
         st.subheader("Send Emails")
         logs_placeholder = st.empty()
-        progress_placeholder = st.progress(0, text="Preparing to send emails...")
-        if st.button("Generate and Send Emails"):
+        progress_placeholder = st.empty()
+        if st.button("Generate and Send Emails", type="primary"):
             with st.spinner("Generating personalized emails and sending..."):
                 log_lines = []
                 def push_log(line: str):
@@ -94,14 +115,20 @@ def main():
                     logs_placeholder.code("\n".join(log_lines))
                     time.sleep(0.02)
 
-                total = len(st.session_state.matches_df)
+                selected_to_send = st.session_state.get("matches_df_selected")
+                if isinstance(selected_to_send, pd.DataFrame):
+                    df_to_send = selected_to_send
+                else:
+                    df_to_send = st.session_state.matches_df
+                total = len(df_to_send)
+                progress_bar = progress_placeholder.progress(0, text="Preparing to send emails...")
                 def push_progress(done: int, total_count: int):
                     pct = int((done / max(total_count, 1)) * 100)
-                    progress_placeholder.progress(pct, text=f"Sending emails... {done}/{total_count}")
+                    progress_bar.progress(pct, text=f"Sending emails... {done}/{total_count}")
 
                 send_personalized_emails(
                     st.session_state.summary_text,
-                    st.session_state.matches_df,
+                    df_to_send,
                     founder_name=founder_name.strip() or None,
                     company_name=(st.session_state.company_name_main or "").strip() or None,
                     founder_email=founder_email.strip() or None,
@@ -112,7 +139,7 @@ def main():
                     on_log=push_log,
                     on_progress=push_progress,
                 )
-            progress_placeholder.progress(100, text="Completed")
+            progress_bar.progress(100, text="Completed")
             st.success("Done.")
 
 
