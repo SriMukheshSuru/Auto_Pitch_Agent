@@ -17,6 +17,43 @@ def main():
 
     st.title("Auto Pitch Agent")
     st.markdown("Identify investors, generate personalized emails, and send — all in one place.")
+    
+    # Hero banner below title (investments/investors themed)
+    # Use data URI for reliability; fallback to hosted image
+    banner_url = "https://images.unsplash.com/photo-1549421263-5ec394d9abf7?auto=format&fit=crop&w=1600&q=60"
+    try:
+        local_banner = os.path.join(os.path.dirname(__file__), "assets", "banner.jpg")
+        if os.path.exists(local_banner):
+            import base64, mimetypes
+            mime, _ = mimetypes.guess_type(local_banner)
+            if not mime:
+                mime = "image/jpeg"
+            with open(local_banner, "rb") as f:
+                b64 = base64.b64encode(f.read()).decode("ascii")
+            banner_url = f"data:{mime};base64,{b64}"
+    except Exception:
+        pass
+
+    st.markdown(
+        f"""
+        <div class="hero-banner"></div>
+        <style>
+        .hero-banner {{
+            background-image: linear-gradient(rgba(0,0,0,0.25), rgba(0,0,0,0.25)), url('{banner_url}');
+            background-size: cover;
+            background-position: center;
+            height: 220px;
+            border-radius: 12px;
+            margin: 0 0 1rem 0;
+            border: 1px solid rgba(49, 51, 63, 0.2);
+        }}
+        @media (max-width: 640px) {{
+            .hero-banner {{ height: 140px; }}
+        }}
+        </style>
+        """,
+        unsafe_allow_html=True,
+    )
 
     with st.sidebar:
         st.header("Email Sending Settings")
