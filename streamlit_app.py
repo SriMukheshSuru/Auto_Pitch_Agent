@@ -20,7 +20,7 @@ def main():
     
     # Hero banner below title (investments/investors themed)
     # Use data URI for reliability; fallback to hosted image
-    banner_url = "https://images.unsplash.com/photo-1549421263-5ec394d9abf7?auto=format&fit=crop&w=1600&q=60"
+    banner_url = "assets/banner.jpg"
     try:
         local_banner = os.path.join(os.path.dirname(__file__), "assets", "banner.jpg")
         if os.path.exists(local_banner):
