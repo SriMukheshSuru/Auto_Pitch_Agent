@@ -5,6 +5,7 @@ import time
 import pandas as pd
 import streamlit as st
 from dotenv import load_dotenv
+from urllib.parse import urlparse
 
 from m1_analyze_company import analyze_company
 from m2_investor_match import find_matching_investors
@@ -93,11 +94,44 @@ def main():
         if not company_name_input or not company_website_input:
             st.error("Please provide both company name and website.")
             return
+        # Normalize and validate website URL
+        website = (company_website_input or "").strip()
+        if website and not (website.startswith("http://") or website.startswith("https://")):
+            website = "https://" + website
+        def _is_plausible_url(u: str) -> bool:
+            try:
+                parsed = urlparse(u)
+                if parsed.scheme not in ("http", "https"):
+                    return False
+                if any(ch.isspace() for ch in u):
+                    return False
+                host = parsed.netloc
+                if not host:
+                    return False
+                # Remove port if present
+                if ":" in host:
+                    host = host.split(":", 1)[0]
+                if host.startswith(".") or host.endswith("."):
+                    return False
+                labels = host.split(".")
+                if len(labels) < 2:
+                    return False
+                tld = labels[-1]
+                if not tld.isalpha() or len(tld) < 2:
+                    return False
+                return True
+            except Exception:
+                return False
+
+        is_valid = _is_plausible_url(website)
+        if not is_valid:
+            st.error("Please enter a valid URL")
+            return
 
         with st.spinner("Analyzing company with Gemini..."):
-            summary_text = analyze_company(company_name_input, company_website_input)
+            summary_text = analyze_company(company_name_input, website)
         if not summary_text:
-            st.error("Could not analyze the company. Check your GEMINI_API_KEY and website.")
+            st.error("Could not analyze the company. Please enter a valid URL.")
             return
 
         st.session_state.summary_text = summary_text
