@@ -10,7 +10,13 @@ from sentence_transformers import SentenceTransformer
 # -----------------
 # Google Sheets Auth
 # -----------------
-SHEET_URL = "https://docs.google.com/spreadsheets/d/1JuOvz1yqnUPaZkA5iGVMxxtVJbECQhLGqz4XkCmd_sA/edit?gid=0"
+# Test VC data set
+# SHEET_URL = "https://docs.google.com/spreadsheets/d/1JuOvz1yqnUPaZkA5iGVMxxtVJbECQhLGqz4XkCmd_sA/edit?gid=0"
+
+# original OPEN VC Dataset
+
+SHEET_URL = "https://docs.google.com/spreadsheets/d/1Hof1KGq4opP5UFf1xoRRkmCD9K56iI1XVixNgnR8NWI/edit?gid=0#gid=0"
+
 SCOPE = ["https://spreadsheets.google.com/feeds", "https://www.googleapis.com/auth/drive"]
 
 creds = ServiceAccountCredentials.from_json_keyfile_name("service_account.json", SCOPE)
