@@ -52,13 +52,9 @@
 
 ---
 
-## 🗂 Workflow
+## 🗂 HLD
 
-```mermaid
-flowchart TD
-    A[Startup Name Input] --> B[Company Profiling via Gemini]
-    B --> C[Investor Matching with CSV + Normalization]
-    C --> D[Personalized Email Drafting]
-    D --> E[Automated Email Sending via SMTP]
+[![System Architecture](assets/diagram.png)](https://app.diagrams.net/#G1i8VxqZ4c7P6Z_v11VR0Up546iXr2yFRU#%7B%22pageId%22%3A%22c3vAkTS7RXfRjgvz3a3n%22%7D)
+
 
 
