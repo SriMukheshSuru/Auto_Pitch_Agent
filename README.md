@@ -62,7 +62,7 @@ Manual investor research is **time-consuming**. Cold emailing is **repetitive** 
 
 ## 🏗 System Architecture
 
-```mermaid
+<!-- ```mermaid
 graph TB
     A[User Input: Company Details] --> B[Web Scraping Module]
     B --> C[Google Gemini Analysis]
@@ -85,7 +85,10 @@ graph TB
         P --> Q[Results Dashboard]
         Q --> R[Email Management]
     end
-```
+``` -->
+
+[![System Architecture](assets/diagram.png)](https://app.diagrams.net/#G1i8VxqZ4c7P6Z_v11VR0Up546iXr2yFRU#%7B%22pageId%22%3A%22c3vAkTS7RXfRjgvz3a3n%22%7D)
+
 
 ---
 
