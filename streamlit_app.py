@@ -35,7 +35,7 @@ st.markdown(hide_theme_switcher, unsafe_allow_html=True)
 def show_landing_page():
     """Display the landing page with about and how it works content"""
     # Landing Page - Combined About Us + How It Works
-    st.markdown('<h1 class="main-header">🚀 Auto Pitch Agent</h1>', unsafe_allow_html=True)
+    st.markdown('<h1 class="main-header">Auto Pitch Agent</h1>', unsafe_allow_html=True)
     st.markdown('<p class="subtitle">AI-Powered Investor Matching & Personalized Outreach Platform</p>', unsafe_allow_html=True)
     
     # Hero banner
@@ -116,7 +116,7 @@ def show_landing_page():
     st.markdown('<div style="text-align: center; margin: 3rem 0;">', unsafe_allow_html=True)
     col1, col2, col3 = st.columns([1, 2, 1])
     with col2:
-        if st.button("🚀 Start Finding Investors", type="primary", use_container_width=True, key="cta_top"):
+        if st.button("Start Finding Investors", type="primary", use_container_width=True, key="cta_top"):
             st.session_state.active_tab = "Pitch Agent"
             st.rerun()
     st.markdown('</div>', unsafe_allow_html=True)
@@ -279,6 +279,7 @@ def show_landing_page():
     # Final CTA
     st.markdown('<div style="text-align: center; margin: 4rem 0 2rem 0;">', unsafe_allow_html=True)
     st.markdown('<h3>Ready to Connect with the Right Investors?</h3>', unsafe_allow_html=True)
+    st.markdown('             ',unsafe_allow_html=True)
     col1, col2, col3 = st.columns([1, 2, 1])
     with col2:
         if st.button("🚀 Launch Auto Pitch Agent", type="primary", use_container_width=True, key="cta_bottom"):
@@ -311,7 +312,7 @@ def show_tool_interface():
         st.caption("When off, messages are sent using your environment's email credentials.")
 
         st.divider()
-        st.header("Signature")
+        st.header("Signature for Email")
         founder_name = st.text_input("Your name", os.getenv("FOUNDER_NAME", ""))
         founder_email = st.text_input("Your email", os.getenv("FOUNDER_EMAIL", os.getenv("EMAIL_FROM", "")))
         founder_phone = st.text_input("Your phone", os.getenv("FOUNDER_PHONE", ""))
