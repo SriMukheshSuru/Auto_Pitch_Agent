@@ -19,6 +19,17 @@ hide_theme_switcher = """
         }
     </style>
 """
+
+hide_menu = """
+    <style>
+        [data-testid="stToolbar"] {
+            visibility: hidden;
+            height: 0%;
+        }
+    </style>
+"""
+st.markdown(hide_menu, unsafe_allow_html=True)
+
 st.markdown(hide_theme_switcher, unsafe_allow_html=True)
 
 def show_landing_page():
