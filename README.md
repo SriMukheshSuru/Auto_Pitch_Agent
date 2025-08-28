@@ -99,7 +99,7 @@ graph TB
 
 ### 1. Clone & Install
 ```bash
-git clone https://github.com/your-username/Auto_Pitch_Agent.git
+git clone https://github.com/SriMukheshSuru/Auto_Pitch_Agent.git
 cd Auto_Pitch_Agent
 pip install -r requirements.txt
 ```
@@ -352,16 +352,10 @@ black *.py
 
 ---
 
-## 📜 License
-
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
-
----
-
 ## 🙋‍♂️ Support & Documentation
 
-- **Issues**: [GitHub Issues](https://github.com/your-username/Auto_Pitch_Agent/issues)
-- **Discussions**: [GitHub Discussions](https://github.com/your-username/Auto_Pitch_Agent/discussions)
+- **Issues**: [GitHub Issues](https://github.com/SriMukheshSuru/Auto_Pitch_Agent/issues)
+- **Discussions**: [GitHub Discussions](https://github.com/SriMukheshSuru/Auto_Pitch_Agent/discussions)
 - **Email**: support@autopitchagent.com
 
 ---
@@ -391,7 +385,7 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 
 **🚀 Ready to revolutionize your fundraising?**
 
-[Get Started](https://github.com/your-username/Auto_Pitch_Agent) • [Documentation](https://docs.autopitchagent.com) • [Support](mailto:support@autopitchagent.com)
+[Get Started](https://github.com/SriMukheshSuru/Auto_Pitch_Agent) • [Documentation](https://docs.autopitchagent.com) • [Support](mailto:support@autopitchagent.com)
 
 ---
 
