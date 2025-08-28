@@ -144,7 +144,7 @@ def main():
     # Show analysis if present
     if st.session_state.summary_text:
         summary_placeholder.subheader("Company Domains / Fields")
-        summary_placeholder.code(st.session_state.summary_text)
+        summary_placeholder.markdown(st.session_state.summary_text)
 
     # Show matches and sending UI if available
     if isinstance(st.session_state.matches_df, pd.DataFrame) and not st.session_state.matches_df.empty:

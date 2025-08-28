@@ -44,8 +44,8 @@ def analyze_company(company_name: str = None, company_website: str = None):
 
     # Step 4: Prepare prompt
     prompt = f"""
-    From the following homepage text of {company_name}, identify the main domains or fields this company is interested in.
-    Give the answer as a short bullet list.
+    Analyze the homepage text of {company_name} and identify the main domains or fields this company operates in.
+    Start your response with "Main domains/fields:" and provide a concise bullet list.
 
     Homepage Text:
     {text}
