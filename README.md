@@ -356,7 +356,6 @@ black *.py
 
 - **Issues**: [GitHub Issues](https://github.com/SriMukheshSuru/Auto_Pitch_Agent/issues)
 - **Discussions**: [GitHub Discussions](https://github.com/SriMukheshSuru/Auto_Pitch_Agent/discussions)
-- **Email**: support@autopitchagent.com
 
 ---
 
