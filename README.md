@@ -62,30 +62,6 @@ Manual investor research is **time-consuming**. Cold emailing is **repetitive** 
 
 ## 🏗 System Architecture
 
-<!-- ```mermaid
-graph TB
-    A[User Input: Company Details] --> B[Web Scraping Module]
-    B --> C[Google Gemini Analysis]
-    C --> D[Company Profile Generation]
-    D --> E[FAISS Vector Search]
-    E --> F[Investor Database]
-    F --> G[Matching Algorithm]
-    G --> H[Personalized Email Generation]
-    H --> I[SMTP Email Sending]
-    I --> J[Real-time Progress Tracking]
-    
-    subgraph "Data Pipeline"
-        K[Google Sheets] --> L[Investment Thesis Processing]
-        L --> M[Vector Embeddings]
-        M --> N[FAISS Index Creation]
-    end
-    
-    subgraph "UI Components"
-        O[Landing Page] --> P[Tool Interface]
-        P --> Q[Results Dashboard]
-        Q --> R[Email Management]
-    end
-``` -->
 
 [![System Architecture](assets/diagram.png)](https://app.diagrams.net/#G1i8VxqZ4c7P6Z_v11VR0Up546iXr2yFRU#%7B%22pageId%22%3A%22c3vAkTS7RXfRjgvz3a3n%22%7D)
 
