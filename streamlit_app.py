@@ -11,16 +11,15 @@ from m1_analyze_company import analyze_company
 from m2_investor_match import find_matching_investors
 from m3_email_sender import send_personalized_emails
 
-st.write(
-    """
+hide_theme_switcher = """
     <style>
-    :root {
-        color-scheme: light !important;
-    }
+        section[data-testid="stSidebarThemeSwitcher"],
+        section[data-testid="stToolbar"] div[data-testid="stToolbarActions"] button[title="Settings"] {
+            display: none;
+        }
     </style>
-    """,
-    unsafe_allow_html=True
-)
+"""
+st.markdown(hide_theme_switcher, unsafe_allow_html=True)
 
 def show_landing_page():
     """Display the landing page with about and how it works content"""
