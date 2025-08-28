@@ -12,15 +12,13 @@ from m2_investor_match import find_matching_investors
 from m3_email_sender import send_personalized_emails
 
 
-def main():
-    st.set_page_config(page_title="Auto Pitch Agent", page_icon="icon.png", layout="wide")
-    load_dotenv()
-
-    st.title("Auto Pitch Agent")
-    st.markdown("Identify investors, generate personalized emails, and send — all in one place.")
+def show_landing_page():
+    """Display the landing page with about and how it works content"""
+    # Landing Page - Combined About Us + How It Works
+    st.markdown('<h1 class="main-header">🚀 Auto Pitch Agent</h1>', unsafe_allow_html=True)
+    st.markdown('<p class="subtitle">AI-Powered Investor Matching & Personalized Outreach Platform</p>', unsafe_allow_html=True)
     
-    # Hero banner below title (investments/investors themed)
-    # Use data URI for reliability; fallback to hosted image
+    # Hero banner
     banner_url = "assets/banner.jpg"
     try:
         local_banner = os.path.join(os.path.dirname(__file__), "assets", "banner.jpg")
@@ -43,18 +41,248 @@ def main():
             background-image: linear-gradient(rgba(0,0,0,0.25), rgba(0,0,0,0.25)), url('{banner_url}');
             background-size: cover;
             background-position: center;
-            height: 220px;
+            height: 300px;
             border-radius: 12px;
-            margin: 0 0 1rem 0;
+            margin: 0 0 2rem 0;
             border: 1px solid rgba(49, 51, 63, 0.2);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }}
+        .hero-overlay {{
+            text-align: center;
+            color: white;
+            padding: 2rem;
+        }}
+        .hero-title {{
+            font-size: 2.5rem;
+            font-weight: bold;
+            margin-bottom: 1rem;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.7);
+        }}
+        .hero-subtitle {{
+            font-size: 1.2rem;
+            margin-bottom: 2rem;
+            text-shadow: 1px 1px 2px rgba(0,0,0,0.7);
+        }}
+        .cta-button {{
+            background: linear-gradient(45deg, #667eea, #764ba2);
+            color: white;
+            padding: 1rem 2rem;
+            border: none;
+            border-radius: 50px;
+            font-size: 1.2rem;
+            font-weight: bold;
+            text-decoration: none;
+            display: inline-block;
+            transition: transform 0.3s ease;
+            box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4);
+        }}
+        .cta-button:hover {{
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(102, 126, 234, 0.6);
         }}
         @media (max-width: 640px) {{
-            .hero-banner {{ height: 140px; }}
+            .hero-banner {{ height: 250px; }}
+            .hero-title {{ font-size: 2rem; }}
+            .hero-subtitle {{ font-size: 1rem; }}
         }}
         </style>
         """,
         unsafe_allow_html=True,
     )
+    
+    # Call-to-Action Section
+    st.markdown('<div style="text-align: center; margin: 3rem 0;">', unsafe_allow_html=True)
+    col1, col2, col3 = st.columns([1, 2, 1])
+    with col2:
+        if st.button("🚀 Start Finding Investors", type="primary", use_container_width=True, key="cta_top"):
+            st.session_state.active_tab = "Pitch Agent"
+            st.rerun()
+    st.markdown('</div>', unsafe_allow_html=True)
+    
+    # About Section
+    st.markdown('<div class="about-section">', unsafe_allow_html=True)
+    st.markdown("## 🎯 Revolutionize Your Investor Outreach")
+    
+    st.markdown("""
+    **Auto Pitch Agent** is a cutting-edge AI-powered platform designed to revolutionize how startups connect with investors. 
+    We analyze your company profile and match you with the most relevant investors 
+    in our comprehensive database.
+    """)
+    
+    # Features
+    st.markdown("### ✨ Key Features")
+    col1, col2, col3 = st.columns(3)
+    
+    with col1:
+        st.markdown("""
+        <div class="feature-card">
+        <h4>🤖 AI-Powered Analysis</h4>
+        <p>Our advanced AI analyzes your company website using Google's Gemini AI to understand your business domains and create a comprehensive profile.</p>
+        </div>
+        """, unsafe_allow_html=True)
+    
+    with col2:
+        st.markdown("""
+        <div class="feature-card">
+        <h4>🎯 Smart Matching</h4>
+        <p>Using semantic search and vector embeddings, we match your company with investors who have the right investment thesis and portfolio focus.</p>
+        </div>
+        """, unsafe_allow_html=True)
+    
+    with col3:
+        st.markdown("""
+        <div class="feature-card">
+        <h4>📧 Personalized Outreach</h4>
+        <p>Generate and send personalized emails to matched investors with tailored messaging that highlights why you're a perfect fit for their portfolio.</p>
+        </div>
+        """, unsafe_allow_html=True)
+    
+    st.markdown("</div>", unsafe_allow_html=True)
+    
+    # How It Works Section
+    st.markdown("---")
+    st.markdown("## 📈 How It Works")
+    st.markdown("### Simple 4-Step Process")
+    
+    steps_col1, steps_col2 = st.columns(2)
+    
+    with steps_col1:
+        st.markdown("""
+        <div class="feature-card">
+        <h4>Step 1: Company Analysis 🔍</h4>
+        <ul>
+        <li>Enter your company name and website</li>
+        <li>Our AI scrapes and analyzes your homepage</li>
+        <li>Extracts key business domains and focus areas</li>
+        <li>Creates a comprehensive company profile</li>
+        </ul>
+        </div>
+        """, unsafe_allow_html=True)
+        
+        st.markdown("""
+        <div class="feature-card">
+        <h4>Step 3: Email Generation 📝</h4>
+        <ul>
+        <li>AI generates personalized email content</li>
+        <li>Tailored messaging for each investor</li>
+        <li>Highlights relevant portfolio fit</li>
+        <li>Professional formatting and tone</li>
+        </ul>
+        </div>
+        """, unsafe_allow_html=True)
+    
+    with steps_col2:
+        st.markdown("""
+        <div class="feature-card">
+        <h4>Step 2: Investor Matching 🎯</h4>
+        <ul>
+        <li>Semantic search through investor database</li>
+        <li>Matches based on investment thesis</li>
+        <li>Considers portfolio companies and focus areas</li>
+        <li>Ranks by relevance and fit score</li>
+        </ul>
+        </div>
+        """, unsafe_allow_html=True)
+        
+        st.markdown("""
+        <div class="feature-card">
+        <h4>Step 4: Automated Outreach 🚀</h4>
+        <ul>
+        <li>Review and select target investors</li>
+        <li>Send personalized emails automatically</li>
+        <li>Track delivery and engagement</li>
+        <li>Follow up strategically</li>
+        </ul>
+        </div>
+        """, unsafe_allow_html=True)
+    
+    # Technology Stack
+    st.markdown("---")
+    st.markdown("### 🔧 Powered by Advanced Technology")
+    
+    tech_col1, tech_col2, tech_col3 = st.columns(3)
+    
+    with tech_col1:
+        st.markdown("""
+        <div class="feature-card">
+        <h4>🧠 AI & ML</h4>
+        <ul>
+        <li>Google Gemini AI, Ollama</li>
+        <li>Sentence Transformers</li>
+        <li>FAISS Vector Search</li>
+        <li>Semantic Embeddings</li>
+        </ul>
+        </div>
+        """, unsafe_allow_html=True)
+    
+    with tech_col2:
+        st.markdown("""
+        <div class="feature-card">
+        <h4>📊 Data Processing</h4>
+        <ul>
+        <li>Web Scraping</li>
+        <li>BeautifulSoup</li>
+        <li>CloudScraper</li>
+        <li>Text Analysis</li>
+        </ul>
+        </div>
+        """, unsafe_allow_html=True)
+    
+    with tech_col3:
+        st.markdown("""
+        <div class="feature-card">
+        <h4>⚡ Infrastructure</h4>
+        <ul>
+        <li>Streamlit Frontend</li>
+        <li>Python Backend</li>
+        <li>Email Integration</li>
+        <li>Real-time Processing</li>
+        </ul>
+        </div>
+        """, unsafe_allow_html=True)
+    
+    # Mission Statement
+    st.markdown("---")
+    st.markdown("### 💡 Our Mission")
+    st.markdown("""
+    <div style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; padding: 2rem; border-radius: 10px; text-align: center; margin: 2rem 0;">
+        <h3 style="color: white; margin-bottom: 1rem;">Democratizing Access to Investment Opportunities</h3>
+        <p style="font-size: 1.1rem; margin: 0;">
+            We believe that great startups shouldn't struggle to find the right investors. Our mission is to make 
+            the investor discovery and outreach process more efficient, targeted, and successful for entrepreneurs worldwide.
+        </p>
+    </div>
+    """, unsafe_allow_html=True)
+    
+    # Final CTA
+    st.markdown('<div style="text-align: center; margin: 4rem 0 2rem 0;">', unsafe_allow_html=True)
+    st.markdown('<h3>Ready to Connect with the Right Investors?</h3>', unsafe_allow_html=True)
+    col1, col2, col3 = st.columns([1, 2, 1])
+    with col2:
+        if st.button("🚀 Launch Auto Pitch Agent", type="primary", use_container_width=True, key="cta_bottom"):
+            st.session_state.active_tab = "Pitch Agent"
+            st.rerun()
+    st.markdown('</div>', unsafe_allow_html=True)
+
+
+def show_tool_interface():
+    """Display the main tool interface"""
+    # Navigation buttons
+    col1, col2, col3 = st.columns([1, 1, 1])
+    with col1:
+        if st.button("🏠 Back to Home", type="secondary", use_container_width=True):
+            st.session_state.active_tab = "Home"
+            st.rerun()
+    # with col2:
+        # st.markdown('<p style="text-align: center; margin: 0; padding: 0.5rem;"><strong>🚀 Auto Pitch Agent Tool</strong></p>', unsafe_allow_html=True)
+    
+    st.markdown("---")
+    
+    # Tool header
+    st.markdown("# 🚀 Auto Pitch Agent Tool")
+    st.markdown("### Enter your company details to find matching investors")
 
     with st.sidebar:
         st.header("Email Sending Settings")
@@ -98,6 +326,7 @@ def main():
         website = (company_website_input or "").strip()
         if website and not (website.startswith("http://") or website.startswith("https://")):
             website = "https://" + website
+        
         def _is_plausible_url(u: str) -> bool:
             try:
                 parsed = urlparse(u)
@@ -214,7 +443,77 @@ def main():
             st.success("Done.")
 
 
+def main():
+    st.set_page_config(
+        page_title="Auto Pitch Agent - AI-Powered Investor Matching", 
+        page_icon="icon.png", 
+        layout="wide",
+        initial_sidebar_state="expanded"
+    )
+    load_dotenv()
+
+    # Custom CSS for professional styling
+    st.markdown("""
+    <style>
+    .main-header {
+        text-align: center;
+        background: linear-gradient(90deg, #667eea 0%, #764ba2 100%);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        font-size: 3.5rem;
+        font-weight: 700;
+        margin-bottom: 0.5rem;
+    }
+    .subtitle {
+        text-align: center;
+        color: #666;
+        font-size: 1.3rem;
+        margin-bottom: 2rem;
+    }
+    .feature-card {
+        background: white;
+        padding: 1.5rem;
+        border-radius: 10px;
+        box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        border-left: 4px solid #667eea;
+        margin: 1rem 0;
+    }
+    .about-section {
+        background: #f8f9fa;
+        padding: 2rem;
+        border-radius: 10px;
+        margin: 2rem 0;
+    }
+    .footer {
+        text-align: center;
+        padding: 2rem;
+        color: #666;
+        border-top: 1px solid #eee;
+        margin-top: 3rem;
+    }
+    </style>
+    """, unsafe_allow_html=True)
+
+    # Initialize tab state
+    if "active_tab" not in st.session_state:
+        st.session_state.active_tab = "Home"
+    
+    # Check if we need to switch tabs
+    if st.session_state.active_tab == "Pitch Agent":
+        # Show tool directly
+        show_tool_interface()
+    else:
+        # Show landing page
+        show_landing_page()
+
+    # Footer
+    st.markdown("""
+    <div class="footer">
+    <p>🚀 <strong>Auto Pitch Agent</strong> - Powered by AI | Built for Entrepreneurs</p>
+    <p>© 2025 Auto Pitch Agent. Connecting startups with the right investors.</p>
+    </div>
+    """, unsafe_allow_html=True)
+
+
 if __name__ == "__main__":
     main()
-
-
