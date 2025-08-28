@@ -433,7 +433,7 @@ def show_tool_interface():
                 log_lines = []
                 def push_log(line: str):
                     log_lines.append(line)
-                    logs_placeholder.code("\n".join(log_lines))
+                    logs_placeholder.markdown("\n".join(log_lines))
                     time.sleep(0.02)
 
                 selected_to_send = st.session_state.get("matches_df_selected")

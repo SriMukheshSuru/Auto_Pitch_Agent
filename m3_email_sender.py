@@ -46,6 +46,59 @@ def _extract_subject_body(raw_text: str) -> Tuple[str, str]:
     return subject, body
 
 
+def _fix_signature_formatting(body: str, founder_name: str = "", company_name: str = "", founder_email: str = "", founder_phone: str = "", founder_linkedin: str = "") -> str:
+    """Fix signature formatting to ensure proper line breaks and complete signature"""
+    # Split body into content and potential signature
+    lines = body.split('\n')
+    
+    # Look for signature patterns and fix them
+    signature_start = -1
+    for i, line in enumerate(lines):
+        if any(word in line.lower() for word in ['regards', 'best', 'sincerely', 'thank you', 'cheers']):
+            signature_start = i
+            break
+    
+    # Prepare the complete signature
+    signature_lines = [
+        "Regards,",
+        founder_name or "",
+        company_name or "",
+        founder_email or "",
+        founder_phone or "",
+        founder_linkedin or ""
+    ]
+    
+    # Filter out empty lines
+    signature_lines = [line for line in signature_lines if line.strip()]
+    
+    if signature_start >= 0:
+        # Found a signature, replace it with properly formatted one
+        content_lines = lines[:signature_start]
+        # Add one blank line before signature
+        if content_lines and content_lines[-1].strip():
+            content_lines.append("")
+        
+        # Combine content with properly formatted signature
+        return '\n'.join(content_lines + signature_lines)
+    
+    # If no signature found, check if the last few lines look like a compressed signature
+    if len(lines) > 0:
+        last_line = lines[-1].strip()
+        if 'regards' in last_line.lower() and any(char in last_line for char in [',', ' ']):
+            # This looks like a compressed signature, let's fix it
+            content_lines = lines[:-1]
+            if content_lines and content_lines[-1].strip():
+                content_lines.append("")
+            
+            return '\n'.join(content_lines + signature_lines)
+    
+    # If no signature found at all, add the complete signature
+    if lines and lines[-1].strip():
+        lines.append("")  # Add blank line before signature
+    
+    return '\n'.join(lines + signature_lines)
+
+
 def generate_personalized_email(
     company_summary: str,
     investor_name: str,
@@ -79,13 +132,15 @@ Subject: <compelling one-line subject>
 Body:
 <final email body>
 
-Append a signature with NO headings/labels and NO title. Use only provided values; omit missing/blank lines. Insert one blank line before the signature. The signature must be exactly these lines, in order:
+IMPORTANT: The signature must be formatted EXACTLY as follows with proper line breaks:
 Regards,
 {founder_name or ""}
 {company_name or ""}
 {founder_email or ""}
 {founder_phone or ""}
 {founder_linkedin or ""}
+
+Each line must be on a separate line. Do not combine lines or use commas between signature elements.
 """
 
     try:
@@ -93,6 +148,17 @@ Regards,
         response = model.generate_content(prompt)
         raw = (response.text or "").strip()
         subject, body = _extract_subject_body(raw)
+        
+        # Fix signature formatting to ensure proper line breaks
+        body = _fix_signature_formatting(
+            body, 
+            founder_name or "", 
+            company_name or "", 
+            founder_email or "", 
+            founder_phone or "", 
+            founder_linkedin or ""
+        )
+        
         return subject, body
     except Exception as e:
         print(f"❌ Error calling Gemini API: {e}")
@@ -254,6 +320,13 @@ def send_personalized_emails(
 
     sent_count = 0
     total_rows = len(matches_df)
+    
+    # Add dry run header if this is a dry run
+    if dry_run:
+        log("## 📧 DRY RUN PREVIEW")
+        log("Below are the email drafts that would be sent:")
+        log("---")
+    
     for idx, (_, row) in enumerate(matches_df.iterrows(), start=1):
         if on_progress is not None:
             try:
@@ -287,8 +360,17 @@ def send_personalized_emails(
             continue
 
         if dry_run:
-            preview = body if len(body) < 300 else body[:300] + "..."
-            log(f"\n--- DRY RUN: {investor_name} <{to_email}> ---\nSubject: {subject}\n{preview}")
+            email_preview = f"""
+### Email #{idx}: {investor_name}
+
+**To:** {investor_name} <{to_email}>  
+**Subject:** {subject}
+
+{body}
+
+---
+            """
+            log(email_preview)
             continue
 
         ok = send_email_smtp(to_email, subject, body)
